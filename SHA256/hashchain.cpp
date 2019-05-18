@@ -45,7 +45,7 @@ std::string sha256(std::string msg, bool isHex = false) {
 
 int main() {
 
-    //std::cout << sha256("Bitcoin is a cryptocurrency, a form of electronic cash.") << std::endl;
+    std::cout << sha256("Bitcoin is a cryptocurrency, a form of electronic cash.") << std::endl;
     unsigned int nLeading0s = 0;
     unsigned long int nTries = 0;
     std::string oldHash = sha256("Bitcoin");
