@@ -6,23 +6,12 @@
 #include <climits>
 #include <string>
 
-#include "cryptopp/cryptlib.h"
-#include "cryptopp/hex.h"
-#include "cryptopp/sha.h"
-#include "cryptopp/files.h"
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/sha.h>
+#include <cryptopp/files.h>
 
 using namespace CryptoPP;
-
-std::string hexToAscii(const std::string& c) {
-    size_t length = c.length();
-    std::string newString;
-    for (size_t i = 0; i < length; i += 2) {
-        std::string byte = c.substr(i, 2);
-        char chr = (char)(int)strtol(byte.c_str(), NULL, 16);
-        newString.push_back(chr);
-    }
-    return newString;
-}
 
 std::string intTohex(const unsigned long int n) {
     std::ostringstream ostream;
@@ -36,7 +25,13 @@ std::string sha256(std::string msg, bool isHex = false) {
     HexEncoder encoder(new FileSink(ostream));
     std::string digest;
 
-    StringSource(isHex ? hexToAscii(msg) : msg, true, new HashFilter(hash, new StringSink(digest)));
+    if (isHex) {
+        std::string decoded;
+        StringSource ss(msg, true, new HexDecoder(new StringSink(decoded)));
+        StringSource(decoded, true, new HashFilter(hash, new StringSink(digest)));
+    }
+    else
+        StringSource(msg, true, new HashFilter(hash, new StringSink(digest)));
 
     StringSource(digest, true, new Redirector(encoder));
 
