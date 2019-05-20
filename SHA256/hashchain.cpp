@@ -5,6 +5,7 @@
 #include <sstream>
 #include <climits>
 #include <string>
+#include <ctime>
 
 #include <cryptopp/cryptlib.h>
 #include <cryptopp/hex.h>
@@ -38,7 +39,7 @@ std::string sha256(std::string msg, bool isHex = false) {
     return ostream.str();
 }
 
-int main() {
+void homework() {
 
     std::cout << sha256("Bitcoin is a cryptocurrency, a form of electronic cash.") << std::endl;
     unsigned int nLeading0s = 0;
@@ -50,9 +51,9 @@ int main() {
         std::string newHash = sha256(oldHash + nonce, true);
         if (newHash.find(std::string(nLeading0s, '0')) == 0) {
             std::cout << nLeading0s << std::endl
-                      << oldHash << std::endl
-                      << nonce << std::endl
-                      << newHash << std::endl;
+                << oldHash << std::endl
+                << nonce << std::endl
+                << newHash << std::endl;
             oldHash = newHash;
             nLeading0s++;
             nTries = 0;
@@ -65,6 +66,45 @@ int main() {
             break;
         }
     }
+}
+
+void onsitetest() {
+
+    time_t start;
+
+	start = time(NULL);
+	std::string oldHash = sha256("Homework 5");
+	unsigned int nLeading0s = 0;
+	unsigned long int nTries = 0;
+
+	while (difftime(time(NULL), start) < 60 * 10) {
+		std::string nonce = intTohex(nTries);
+		std::string newHash = sha256(oldHash + nonce, true);
+		if (newHash.find(std::string(nLeading0s, '1')) == 0) {
+			std::cout << nLeading0s << std::endl
+					  << oldHash << std::endl
+					  << nonce << std::endl
+					  << newHash << std::endl;
+			oldHash = newHash;
+			nLeading0s++;
+			nTries = 0;
+		}
+		else
+			nTries++;
+
+		if (nTries == ULONG_MAX) {
+			std::cerr << "Overflow" << std::endl;
+			break;
+		}
+
+	}
+}
+
+int main() {
+
+    homework();
+
+    // onsitetest();
 
     return 0;
 }
